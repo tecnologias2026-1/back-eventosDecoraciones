@@ -1,121 +1,51 @@
 <?php
 require_once __DIR__ . '/../database/connection.php';
+global $pdo;
 
-global $conn;
-
-function getUsersModel() {
-  global $conn;
-  
-  $query = "SELECT * FROM users";
-  $result = $conn->query($query);
-  
-  if (!$result) {
-    return false;
-  }
-  
-  $users = [];
-  while ($row = $result->fetch_assoc()) {
-    $users[] = $row;
-  }
-  
-  return $users;
+function getUsersModel(): array|false {
+    global $pdo;
+    $stmt = $pdo->query("SELECT id, name, email, role, created_at FROM users ORDER BY id");
+    return $stmt ? $stmt->fetchAll() : false;
 }
 
-function getUserByIdModel($id) {
-  global $conn;
-  
-  $id = intval($id);
-  $query = "SELECT * FROM users WHERE id = ?";
-  
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return false;
-  }
-  
-  $stmt->bind_param("i", $id);
-  $stmt->execute();
-  $result = $stmt->get_result();
-  
-  if (!$result) {
-    return false;
-  }
-  
-  $user = $result->fetch_assoc();
-  $stmt->close();
-  
-  return $user;
+function getUserByIdModel(int $id): array|null|false {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT id, name, email, role, created_at FROM users WHERE id = :id");
+    if (!$stmt->execute([':id' => $id])) return false;
+    $user = $stmt->fetch();
+    return $user ?: null;
 }
 
-function createUserModel($data) {
-  global $conn;
-  
-  $nombre = $data['nombre'] ?? '';
-  $email = $data['email'] ?? '';
-  $telefono = $data['telefono'] ?? null;
-  
-  $query = "INSERT INTO users (nombre, email, telefono) VALUES (?, ?, ?)";
-  
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return false;
-  }
-  
-  $stmt->bind_param("sss", $nombre, $email, $telefono);
-  if (!$stmt->execute()) {
-    return false;
-  }
-  
-  $id = $conn->insert_id;
-  $stmt->close();
-  
-  return $id;
+function createUserModel(array $data): int|false {
+    global $pdo;
+    $stmt = $pdo->prepare(
+        "INSERT INTO users (name, email, password_hash, role) VALUES (:name, :email, :password_hash, :role) RETURNING id"
+    );
+    $ok = $stmt->execute([
+        ':name'          => $data['name']          ?? '',
+        ':email'         => $data['email']         ?? '',
+        ':password_hash' => password_hash($data['password'] ?? '', PASSWORD_BCRYPT),
+        ':role'          => $data['role']           ?? 'client',
+    ]);
+    return $ok ? (int) $stmt->fetchColumn() : false;
 }
 
-function updateUserModel($id, $data) {
-  global $conn;
-  
-  $id = intval($id);
-  $nombre = $data['nombre'] ?? null;
-  $email = $data['email'] ?? null;
-  $telefono = $data['telefono'] ?? null;
-  
-  $query = "UPDATE users SET nombre = ?, email = ?, telefono = ? WHERE id = ?";
-  
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return false;
-  }
-  
-  $stmt->bind_param("sssi", $nombre, $email, $telefono, $id);
-  if (!$stmt->execute()) {
-    return false;
-  }
-  
-  $affected = $stmt->affected_rows;
-  $stmt->close();
-  
-  return $affected;
+function updateUserModel(int $id, array $data): int|false {
+    global $pdo;
+    $stmt = $pdo->prepare(
+        "UPDATE users SET name=:name, email=:email, role=:role WHERE id=:id"
+    );
+    $ok = $stmt->execute([
+        ':name'  => $data['name']  ?? null,
+        ':email' => $data['email'] ?? null,
+        ':role'  => $data['role']  ?? 'client',
+        ':id'    => $id,
+    ]);
+    return $ok ? $stmt->rowCount() : false;
 }
 
-function deleteUserModel($id) {
-  global $conn;
-  
-  $id = intval($id);
-  $query = "DELETE FROM users WHERE id = ?";
-  
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return false;
-  }
-  
-  $stmt->bind_param("i", $id);
-  if (!$stmt->execute()) {
-    return false;
-  }
-  
-  $affected = $stmt->affected_rows;
-  $stmt->close();
-  
-  return $affected;
+function deleteUserModel(int $id): int|false {
+    global $pdo;
+    $stmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
+    return $stmt->execute([':id' => $id]) ? $stmt->rowCount() : false;
 }
-?>
