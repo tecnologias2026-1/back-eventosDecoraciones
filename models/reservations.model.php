@@ -3,7 +3,7 @@ require_once __DIR__ . '/../database/connection.php';
 global $pdo;
 
 function generateReservationCode(): string {
-    return '#WP-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
+    return 'WP-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
 }
 
 function createReservationModel(array $d): array {
