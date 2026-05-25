@@ -115,3 +115,10 @@ function updateReservationStatusModel(string $code, string $status): int {
     $stmt->execute([':status' => $status, ':code' => $code]);
     return $stmt->rowCount();
 }
+
+function deleteReservationModel(string $code): int {
+    global $pdo;
+    $stmt = $pdo->prepare("DELETE FROM reservations WHERE code = :code");
+    $stmt->execute([':code' => $code]);
+    return $stmt->rowCount();
+}

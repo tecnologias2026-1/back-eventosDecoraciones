@@ -58,6 +58,18 @@ function adminGetAllReservations(): void {
     echo json_encode($reservations);
 }
 
+function adminDeleteReservation(string $code): void {
+    requireAdmin();
+    $rows = deleteReservationModel($code);
+    if ($rows === 0) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Reserva no encontrada']);
+        return;
+    }
+    http_response_code(200);
+    echo json_encode(['message' => 'Reserva eliminada']);
+}
+
 function adminUpdateReservationStatus(string $code): void {
     requireAdmin();
     $input  = json_decode(file_get_contents('php://input'), true);

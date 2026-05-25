@@ -18,6 +18,9 @@ function handleReservationRoutes(string $method, string $path): void {
     // PATCH /reservations/{code}/status (admin)
     } elseif ($method === 'PATCH' && preg_match('#^/reservations/([^/]+)/status$#', $path, $m)) {
         adminUpdateReservationStatus($m[1]);
+    // DELETE /reservations/{code} (admin)
+    } elseif ($method === 'DELETE' && preg_match('#^/reservations/([^/]+)$#', $path, $m)) {
+        adminDeleteReservation($m[1]);
     } else {
         http_response_code(404);
         echo json_encode(['error' => 'Ruta no encontrada']);
