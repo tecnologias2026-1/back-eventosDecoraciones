@@ -10,6 +10,16 @@ function createReservationModel(array $d): array {
     global $pdo;
     $code = generateReservationCode();
 
+    if (empty($d['venue_id']) && !empty($d['venue_slug'])) {
+        $s = $pdo->prepare("SELECT id FROM venues WHERE slug = :slug AND is_active = TRUE");
+        $s->execute([':slug' => $d['venue_slug']]);
+        $row = $s->fetch();
+        if (!$row) {
+            throw new \RuntimeException("Venue not found: " . $d['venue_slug']);
+        }
+        $d['venue_id'] = $row['id'];
+    }
+
     $pdo->beginTransaction();
     try {
         $stmt = $pdo->prepare("

@@ -5,13 +5,19 @@ require_once __DIR__ . '/../middleware/auth.php';
 function createReservation(): void {
     $input = json_decode(file_get_contents('php://input'), true);
 
-    $required = ['email', 'venue_id', 'wedding_date', 'guest_count'];
+    $required = ['email', 'wedding_date', 'guest_count'];
     foreach ($required as $field) {
         if (empty($input[$field])) {
             http_response_code(400);
             echo json_encode(['error' => "El campo '$field' es requerido"]);
             return;
         }
+    }
+
+    if (empty($input['venue_id']) && empty($input['venue_slug'])) {
+        http_response_code(400);
+        echo json_encode(['error' => "El campo 'venue_id' o 'venue_slug' es requerido"]);
+        return;
     }
 
     try {
