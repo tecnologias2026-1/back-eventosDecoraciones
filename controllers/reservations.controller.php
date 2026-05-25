@@ -81,9 +81,9 @@ function adminUpdateReservationStatus(string $code): void {
     $input  = json_decode(file_get_contents('php://input'), true);
     $status = $input['status'] ?? '';
 
-    if (!in_array($status, ['pending', 'confirmed', 'cancelled'], true)) {
+    if (!in_array($status, ['pending', 'confirmed', 'cancelled', 'completed'], true)) {
         http_response_code(400);
-        echo json_encode(['error' => 'Estado inválido. Use: pending, confirmed, cancelled']);
+        echo json_encode(['error' => 'Estado inválido. Use: pending, confirmed, cancelled, completed']);
         return;
     }
 
