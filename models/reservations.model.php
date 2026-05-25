@@ -109,7 +109,7 @@ function getReservationsByEmailModel(string $email): array {
 function getAllReservationsModel(): array {
     global $pdo;
     $stmt = $pdo->query("
-        SELECT r.*, v.name AS venue_name
+        SELECT r.*, v.name AS venue_name, v.slug AS venue_slug
         FROM reservations r
         JOIN venues v ON v.id = r.venue_id
         ORDER BY r.created_at DESC

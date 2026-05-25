@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS reservations (
   special_requirements TEXT,
   deposit_amount       INTEGER,
   total_price          INTEGER,
-  status               VARCHAR(15) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','confirmed','cancelled')),
+  status               VARCHAR(15) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','confirmed','cancelled','completed')),
   created_at           TIMESTAMPTZ DEFAULT NOW(),
   updated_at           TIMESTAMPTZ DEFAULT NOW()
 );

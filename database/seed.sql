@@ -91,11 +91,11 @@ INSERT INTO service_features (service_id, feature_text, display_order) VALUES
 ON CONFLICT DO NOTHING;
 
 -- Weddings (portfolio)
-INSERT INTO weddings (bride_name, groom_name, wedding_date, venue_id, review_text, is_featured, display_order) VALUES
-('Juana',   'Carlos',  '2024-03-15', (SELECT id FROM venues WHERE slug='paz-del-rio'), 'Fue el día más mágico de nuestras vidas. Cada detalle estuvo perfecto gracias al equipo de E&D.', TRUE,  1),
-('Vanessa', 'Pedro',   '2024-06-22', (SELECT id FROM venues WHERE slug='el-cedro'),    'El equipo lo organizó todo a la perfección. Los invitados quedaron encantados con la hacienda.',   FALSE, 2),
-('Tatiana', 'Felipe',  '2024-09-07', (SELECT id FROM venues WHERE slug='arkadia'),     'Soñé con una boda así desde niña. E&D lo hicieron realidad superando todas nuestras expectativas.', FALSE, 3),
-('Laura',   'Jorge',   '2024-11-30', (SELECT id FROM venues WHERE slug='botania'),     'Los jardines de Botania son un sueño. Nuestros invitados no paran de hablar de lo hermoso que fue.',FALSE, 4)
+INSERT INTO weddings (bride_name, groom_name, wedding_date, venue_id, banner_image, review_text, is_featured, display_order) VALUES
+('Juana',   'Carlos',  '2024-03-15', (SELECT id FROM venues WHERE slug='paz-del-rio'), 'juana y carlos.png', 'Fue el día más mágico de nuestras vidas. Cada detalle estuvo perfecto gracias al equipo de E&D.', TRUE,  1),
+('Vanessa', 'Pedro',   '2024-06-22', (SELECT id FROM venues WHERE slug='el-cedro'),    'VyP w1.jpg',         'El equipo lo organizó todo a la perfección. Los invitados quedaron encantados con la hacienda.',   FALSE, 2),
+('Tatiana', 'Felipe',  '2024-09-07', (SELECT id FROM venues WHERE slug='arkadia'),     'TyF w2.png',         'Soñé con una boda así desde niña. E&D lo hicieron realidad superando todas nuestras expectativas.', FALSE, 3),
+('Laura',   'Jorge',   '2024-11-30', (SELECT id FROM venues WHERE slug='botania'),     'LyJ w3.png',         'Los jardines de Botania son un sueño. Nuestros invitados no paran de hablar de lo hermoso que fue.',FALSE, 4)
 ON CONFLICT DO NOTHING;
 
 -- Wedding features
